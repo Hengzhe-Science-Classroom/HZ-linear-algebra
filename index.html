@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Algebra — Interactive</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <button id="sidebar-toggle" aria-label="Toggle sidebar">&#9776;</button>
+        <aside id="sidebar">
+            <div id="sidebar-header">
+                <h1>Linear Algebra</h1>
+                <p class="author">Strang / Axler / Lay / 同济大学</p>
+                <div id="progress-container">
+                    <div id="progress-bar"><div id="progress-fill"></div></div>
+                    <span id="progress-text">0%</span>
+                </div>
+            </div>
+            <div id="search-container">
+                <input type="text" id="search-input" placeholder="Search topics...">
+            </div>
+            <nav id="chapter-nav"></nav>
+            <div id="sidebar-footer"><p class="copyright-notice" style="font-size:0.7rem;color:#888;margin-top:12px;text-align:center;">&copy; 2026 Hengzhe Zhao &middot; AGPL-3.0 &amp; Commercial</p>
+                <button id="reset-progress">Reset Progress</button>
+            </div>
+        </aside>
+        <main id="main-content">
+            <div id="welcome-screen">
+                <div class="welcome-hero">
+                    <h1>Linear Algebra</h1>
+                    <h2>线性代数 · Interactive</h2>
+                    <p class="welcome-description">
+                        From systems of equations to singular value decomposition, explore
+                        linear algebra through interactive visualizations. Every vector,
+                        every transformation, every eigenvalue comes alive on screen.
+                    </p>
+                </div>
+                <div class="roadmap">
+                    <h3>What You'll Explore</h3>
+                    <div class="roadmap-parts">
+                        <div class="roadmap-part">
+                            <h4>Part A: 线性方程组</h4>
+                            <ul>
+                                <li>Ch 0: 线性方程组与行化简</li>
+                                <li>Ch 1: 矩阵运算</li>
+                                <li>Ch 2: LU 分解</li>
+                            </ul>
+                        </div>
+                        <div class="roadmap-part">
+                            <h4>Part B: 向量空间</h4>
+                            <ul>
+                                <li>Ch 3: 向量空间与子空间</li>
+                                <li>Ch 4: 基与维数</li>
+                            </ul>
+                        </div>
+                        <div class="roadmap-part">
+                            <h4>Part C: 线性变换</h4>
+                            <ul>
+                                <li>Ch 5: 四个基本子空间</li>
+                                <li>Ch 6: 线性映射</li>
+                                <li>Ch 7: 矩阵表示与相似</li>
+                            </ul>
+                        </div>
+                        <div class="roadmap-part">
+                            <h4>Part D: 行列式</h4>
+                            <ul>
+                                <li>Ch 8: 行列式的性质</li>
+                                <li>Ch 9: 行列式的应用</li>
+                            </ul>
+                        </div>
+                        <div class="roadmap-part">
+                            <h4>Part E: 特征值</h4>
+                            <ul>
+                                <li>Ch 10: 特征值与特征向量</li>
+                                <li>Ch 11: 对角化</li>
+                                <li>Ch 12: 复特征值与Jordan标准形</li>
+                            </ul>
+                        </div>
+                        <div class="roadmap-part">
+                            <h4>Part F: 内积空间</h4>
+                            <ul>
+                                <li>Ch 13: 内积与正交</li>
+                                <li>Ch 14: Gram-Schmidt 与 QR 分解</li>
+                                <li>Ch 15: 最小二乘法</li>
+                            </ul>
+                        </div>
+                        <div class="roadmap-part">
+                            <h4>Part G: 谱定理与分解</h4>
+                            <ul>
+                                <li>Ch 16: 对称矩阵与谱定理</li>
+                                <li>Ch 17: 奇异值分解</li>
+                                <li>Ch 18: 二次型与正定性</li>
+                            </ul>
+                        </div>
+                        <div class="roadmap-part">
+                            <h4>Part H: 应用</h4>
+                            <ul>
+                                <li>Ch 19: 线性代数综合应用</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <p class="welcome-start">Select a chapter from the sidebar to begin your journey into linear algebra!</p>
+            </div>
+            <div id="chapter-content" style="display:none;">
+                <div id="chapter-header">
+                    <div id="chapter-number-badge"></div>
+                    <h1 id="chapter-title"></h1>
+                    <p id="chapter-subtitle"></p>
+                </div>
+                <div id="section-tabs"></div>
+                <article id="section-content"></article>
+                <div id="exercises-panel" style="display:none;">
+                    <h3>Exercises</h3>
+                    <div id="exercises-list"></div>
+                </div>
+                <div id="chapter-nav-buttons">
+                    <button id="prev-btn" disabled>&larr; Previous</button>
+                    <span id="section-indicator"></span>
+                    <button id="next-btn">Next &rarr;</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <script src="viz-engine.js"></script>
+
+    <!-- Chapter manifest for lazy loading -->
+    <script>
+    window.CHAPTER_MANIFEST = [
+        {number:0,  id:'ch00', title:'Systems of Linear Equations & Row Reduction',   file:'ch00-systems-row-reduction'},
+        {number:1,  id:'ch01', title:'Matrix Operations',                              file:'ch01-matrix-operations'},
+        {number:2,  id:'ch02', title:'LU Factorization',                               file:'ch02-lu-factorization'},
+        {number:3,  id:'ch03', title:'Vector Spaces & Subspaces',                      file:'ch03-vector-spaces'},
+        {number:4,  id:'ch04', title:'Basis & Dimension',                              file:'ch04-basis-dimension'},
+        {number:5,  id:'ch05', title:'Four Fundamental Subspaces',                     file:'ch05-four-subspaces'},
+        {number:6,  id:'ch06', title:'Linear Maps',                                    file:'ch06-linear-maps'},
+        {number:7,  id:'ch07', title:'Matrix Representation & Similarity',             file:'ch07-matrix-representation'},
+        {number:8,  id:'ch08', title:'Properties of Determinants',                     file:'ch08-determinant-properties'},
+        {number:9,  id:'ch09', title:'Applications of Determinants',                   file:'ch09-determinant-applications'},
+        {number:10, id:'ch10', title:'Eigenvalues & Eigenvectors',                     file:'ch10-eigenvalues'},
+        {number:11, id:'ch11', title:'Diagonalization',                                file:'ch11-diagonalization'},
+        {number:12, id:'ch12', title:'Complex Eigenvalues & Jordan Form',              file:'ch12-jordan-form'},
+        {number:13, id:'ch13', title:'Inner Products & Orthogonality',                 file:'ch13-inner-products'},
+        {number:14, id:'ch14', title:'Gram-Schmidt & QR Factorization',                file:'ch14-gram-schmidt-qr'},
+        {number:15, id:'ch15', title:'Least Squares',                                  file:'ch15-least-squares'},
+        {number:16, id:'ch16', title:'Symmetric Matrices & Spectral Theorem',          file:'ch16-spectral-theorem'},
+        {number:17, id:'ch17', title:'Singular Value Decomposition',                   file:'ch17-svd'},
+        {number:18, id:'ch18', title:'Quadratic Forms & Positive Definiteness',        file:'ch18-quadratic-forms'},
+        {number:19, id:'ch19', title:'Applications of Linear Algebra',                 file:'ch19-applications'}
+    ];
+    </script>
+
+    <script src="app.js"></script>
+</body>
+</html>
